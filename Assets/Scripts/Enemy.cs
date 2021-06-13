@@ -111,14 +111,14 @@ public class Enemy : MonoBehaviour
             ang = (ang - 90) / 100;
             distance = distance - ang;
             Debug.Log(ang);//hesaplanan açı sonucu çubuğun topla arasında olması gereken x mesafesi
-            if (distance > 0.005f)
+            if (distance > 0.05f)
             {
                 distance = 1;
                 Vector3 currentpos = transform.position;
                 currentpos.x =currentpos.x + distance * speed * Time.deltaTime;
                 transform.position = currentpos;
             }
-            else if (distance < -0.005f)
+            else if (distance < -0.05f)
             {
                 distance = -1;
                 Vector3 currentpos = transform.position;
