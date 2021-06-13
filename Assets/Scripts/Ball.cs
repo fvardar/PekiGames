@@ -5,8 +5,9 @@ using UnityEngine.UI;
 
 public class Ball : MonoBehaviour
 {
+    public float test;
+
     public float mes;//mesafe
-    public float ang;//açı 
     public float direction;//yön
     private int i = 0;//topa kaç kere dokunulduğu
     public static int bluegoal = 1, redgoal = 1;//takımları attığı gol sayıları
@@ -26,20 +27,18 @@ public class Ball : MonoBehaviour
         if (collision.transform.tag == "Stick")//topun oyuncunun çubuğuna dokunduktan sonraki açısal hareketi
         {
             i ++;
-            mes = collision.transform.position.x - transform.position.x + 1.6f;
-            ang = (mes * 100f) / 3.2f;
-            ang = (ang * 1.5f) + 15f + 90;
-            direction = ang +180;
+            mes = collision.transform.position.x - transform.position.x;
+            direction = mes * 100;
+            test = direction + 90;
             spt.color = Color.blue;
             PlayerPrefs.SetInt("Tc",i);
         }
         if (collision.transform.tag == "Enemy")//topun rakip çubuğa dokunduktan sonraki hareketi
         {
             i++;
-            mes = collision.transform.position.x - transform.position.x + 1.6f;
-            ang = (mes * 100f) / 3.2f;
-            ang = (ang * 1.5f) + 15f + 90;
-            direction = ang * -1;
+            mes = collision.transform.position.x - transform.position.x;
+            direction = (mes * 100) * -1 + 180;
+            test = direction + 90;
             spt.color = Color.red;
             PlayerPrefs.SetInt("Tc", i);
         }
@@ -83,7 +82,6 @@ public class Ball : MonoBehaviour
 
     void FixedUpdate()
     {
-        direction = direction % 360;//topun hareketi
         transform.rotation = Quaternion.Euler(0f, 0f, direction);
         Vector3 movement = transform.up * MoveSpeed * Time.deltaTime;
         transform.position += movement;
@@ -97,7 +95,6 @@ public class Ball : MonoBehaviour
     {
         i = 0;
         transform.position = respawn.transform.position;
-        ang = 0;
         PlayerPrefs.SetInt("Tc", 0);
         reset = true;
         spt.color = Color.grey;

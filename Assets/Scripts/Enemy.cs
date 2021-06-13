@@ -4,11 +4,12 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
+    public float distance;
+
     public GameObject target;//top
     public GameObject fin;//bitiş noktası
     public float speed;
     public int levell;//rakip levelı
-    private bool dirRight = false;//2.level için deneme
     // Start is called before the first frame update
     void Start()
     {
@@ -19,17 +20,17 @@ public class Enemy : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float distance = target.transform.position.x - transform.position.x;
+        distance = target.transform.position.x - transform.position.x;
         if (levell == 1)//1.levelda rakip çubuk tamamiyle topun x düzleminde yaptığı hareketi takip edip topa vurmaya çalışıyor
         {
-            if (distance > 0.2f)
+            if (distance > 0.3f)
             {
                 distance = 1;
                 Vector3 currentpos = transform.position;
                 currentpos.x += distance * speed * Time.deltaTime;
                 transform.position = currentpos;
             }
-            else if(distance< -0.2f)
+            else if(distance< -0.3f)
             {
                 distance = -1;
                 Vector3 currentpos = transform.position;
@@ -37,39 +38,92 @@ public class Enemy : MonoBehaviour
                 transform.position = currentpos;
             }
         }
-        else if (levell == 2)//!!!!Tam olarak yapamadım fakat burda yapmayı hayal ettiğim şey rakip oyuncu topun x düzlemindeki hareketini takip ederken
-            //aynı zamanda kendisi ve bitiş noktasını açıyı hesaplaması. Bu hesaplamalar sonucunda kendini x düzleminde fazladan hareket ettirmesi
+        if (levell == 2)//2.Level topun konumu + bitiş noktasının rakibe olan uzaklığına göre vuruş sabit bir açıyla vuruş
         {
-            float ang = AngleBetweenVector2(fin.transform.position.x,transform.position.x, fin.transform.position.y, transform.position.y);//açı hesaplama
-            ang = (ang / 180) - 0.5f;//hesaplanan açı sonucu çubuğun topla arasında olması gereken x mesafesi
-            if (distance > 0.2f)//çubuğun normal hareketi
+            float ang = fin.transform.position.x - transform.position.x;//mesafe hesaplama
+            if (ang > 0)
+            {
+                ang = 0.5f;
+            }
+            else
+            {
+                ang = -0.5f;
+            }
+
+            distance = distance - ang/100;
+            if (distance > 0.2f)
             {
                 distance = 1;
                 Vector3 currentpos = transform.position;
                 currentpos.x += distance * speed * Time.deltaTime;
                 transform.position = currentpos;
-                    if (dirRight)
-                    transform.Translate(Vector2.right * speed * Time.deltaTime);//çubuğun fazladan x eksenindeki hareketi fakat bu kısmı tam olarak yapamadım
             }
-            else if (distance < -0.2f)//zıt yönlü hareket
+            else if (distance < -0.2f)
             {
                 distance = -1;
                 Vector3 currentpos = transform.position;
                 currentpos.x += distance * speed * Time.deltaTime;
                 transform.position = currentpos;
-                if (dirRight!)
-                {
-                    transform.Translate(-Vector2.right * speed * Time.deltaTime);
-                }
             }
-            if (ang > 0)//x ekseninde olması gereken fark
+        }
+        if (levell == 3)//3. Levelda topun konumu + bitiş noktasının düşman çubuğuna olan uzaklığına göre değişken bir açıyla vuruş
+        {
+            float ang = (fin.transform.position.x - transform.position.x) / 10;//mesafe hesaplama
+            distance = distance - ang;
+            if (distance > 0.2f)
             {
-                dirRight = false;
+                distance = 1;
+                Vector3 currentpos = transform.position;
+                currentpos.x += distance * speed * Time.deltaTime;
+                transform.position = currentpos;
             }
-
-            if (ang <= 0)
+            else if (distance < -0.2f)
             {
-                dirRight = true;
+                distance = -1;
+                Vector3 currentpos = transform.position;
+                currentpos.x += distance * speed * Time.deltaTime;
+                transform.position = currentpos;
+            }
+        }
+        else if (levell == 4)//Level 4 topun konumu + Bitiş noktasıyla düşman noktası arasındataki tam açıyla göre hareket edip yanılma payı ile vuruş
+        {
+            float ang = AngleBetweenVector2(fin.transform.position.x, transform.position.x, fin.transform.position.y, transform.position.y);//açı hesaplama
+            ang = (ang - 90) / 100;
+            distance = distance - ang;
+            if (distance > 0.2f)
+            {
+                distance = 1;
+                Vector3 currentpos = transform.position;
+                currentpos.x = currentpos.x + distance * speed * Time.deltaTime;
+                transform.position = currentpos;
+            }
+            else if (distance < -0.2f)
+            {
+                distance = -1;
+                Vector3 currentpos = transform.position;
+                currentpos.x = currentpos.x + distance * speed * Time.deltaTime;
+                transform.position = currentpos;
+            }
+        }
+        else if (levell == 5)//Level  topun konumu + Bitiş noktasıyla düşman noktası arasındataki tam açıyla göre hareket edip yanılma payının en düşük hali
+        {
+            float ang = AngleBetweenVector2(fin.transform.position.x,transform.position.x, fin.transform.position.y, transform.position.y);//açı hesaplama
+            ang = (ang - 90) / 100;
+            distance = distance - ang;
+            Debug.Log(ang);//hesaplanan açı sonucu çubuğun topla arasında olması gereken x mesafesi
+            if (distance > 0.005f)
+            {
+                distance = 1;
+                Vector3 currentpos = transform.position;
+                currentpos.x =currentpos.x + distance * speed * Time.deltaTime;
+                transform.position = currentpos;
+            }
+            else if (distance < -0.005f)
+            {
+                distance = -1;
+                Vector3 currentpos = transform.position;
+                currentpos.x = currentpos.x + distance * speed * Time.deltaTime;
+                transform.position = currentpos;
             }
         }
     }
